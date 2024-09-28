@@ -13,7 +13,7 @@
     "skipLibCheck": true,  // 라이브러리 체크 건너뜀
     "strict": true         // 엄격한 타입 검사 활성화
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"], // 파일 포함 범위
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "src/**/*.tsx"],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
