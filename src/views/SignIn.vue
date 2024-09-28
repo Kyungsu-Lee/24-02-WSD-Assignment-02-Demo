@@ -215,7 +215,6 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
 }
 
 #phone {
@@ -235,6 +234,19 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+
+@media (max-height: 600px) {
+  #phone {
+    transform: translate(-50%, -50%) scale(0.5); /* Scale down on small screens */
+  }
+}
+
+@media (max-height: 400px) {
+  #phone {
+    transform: translate(-50%, -50%) scale(0.3); /* Further scale down */
+  }
 }
 
 #content-wrapper {
@@ -440,12 +452,12 @@ button:hover {
 
 #login {
   z-index:2;
-  top: 10svh;
+  top: 5svh;
 }
 
 #register {
   z-index:2;
-  top: 10svh;
+  top: 5svh;
 }
 
 .account-check {
@@ -468,12 +480,12 @@ button:hover {
 }
 
 #register.hidden {
-  top:calc(10svh + 90px) !important;
+  top:calc(5svh + 90px) !important;
   z-index:1;
 }
 
 #login.hidden {
-  top:calc(10svh + 220px) !important;
+  top:calc(5svh + 220px) !important;
   z-index:1;
 }
 
