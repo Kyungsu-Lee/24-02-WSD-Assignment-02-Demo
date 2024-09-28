@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "baseUrl": ".",        // 기본 경로 설정
     "paths": {
       "@/*": ["src/*"]     // @ 경로 별칭 설정
