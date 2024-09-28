@@ -11,13 +11,18 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": false,
-    "emitDeclarationOnly": true,
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+
+
+    "composite": true,  // composite 옵션 추가
+    "declaration": true,  // declaration 옵션 추가
+    "emitDeclarationOnly": true,  // emitDeclarationOnly 사용
   },
   "include": ["vite.config.ts"]
 }
