@@ -61,7 +61,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 export default {
-  name: 'SignInView',
   setup() {
     const isLoginVisible = ref(true)
     const email = ref('')

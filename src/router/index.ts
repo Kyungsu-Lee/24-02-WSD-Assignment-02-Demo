@@ -1,6 +1,6 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import App from "../App.vue";
-import SignInView from "../views/SignIn.vue";
+import App from '@/App.vue';
+import SignIn from '@/views/SignIn.vue';
 
 const routes = [
     {
@@ -11,7 +11,7 @@ const routes = [
     {
         path: '/signin',
         name: 'SignIn', // name 추가
-        component: SignInView,
+        component: SignIn,
     }
 ]
 
