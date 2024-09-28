@@ -517,15 +517,15 @@ button:hover {
 }
 
 @keyframes register-swap {
-  0% {transform: translate(0%; 0%)}
+  0% {transform: translate(0%, 0%)}
   50% {transform: translate(30%, 0%);}
-  0% {transform: translate(0%; 0%)}
+  0% {transform: translate(0%, 0%)}
 }
 
 @keyframes login-swap {
-  0% {transform: translate(0%; 0%)}
+  0% {transform: translate(0%, 0%)}
   50% {transform: translate(-70%, 0%);}
-  0% {transform: translate(0%; 0%)}
+  0% {transform: translate(0%, 0%)}
 }
 
 </style>
