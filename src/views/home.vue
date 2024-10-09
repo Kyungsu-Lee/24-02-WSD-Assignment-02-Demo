@@ -72,7 +72,7 @@ export default {
     },
     handleScroll() {
       const header = document.querySelector('.app-header');
-      if (window.scrollY > 5) {
+      if (window.scrollY > 50) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
@@ -80,10 +80,10 @@ export default {
     }
   },
   mounted() {
-    // window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('scroll', this.handleScroll);
   },
   beforeUnmount() {
-    // window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('scroll', this.handleScroll);
   },
 };
 </script>
@@ -95,7 +95,19 @@ body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: #141414;
   color: white;
+  overflow: auto !important;
   overflow-x: hidden;
+}
+
+html, body {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 #app {
