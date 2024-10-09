@@ -15,7 +15,7 @@
         <button class="icon-button">
           <font-awesome-icon :icon="['fas', 'search']" />
         </button>
-        <button class="icon-button">
+        <button class="icon-button" @click="removeKey">
           <font-awesome-icon :icon="['fas', 'user']" />
         </button>
       </div>
@@ -62,6 +62,10 @@ export default {
     this.fetchFeaturedMovie();
   },
   methods: {
+    removeKey() {
+      localStorage.removeItem('TMDb-Key');
+      this.$router.push('/signin');
+    },
     async fetchFeaturedMovie() {
       try {
         const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}&language=ko-KR`);

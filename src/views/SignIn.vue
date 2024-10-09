@@ -545,16 +545,20 @@ button:hover {
 
   #phone {
     width: 100%;
-    transform: translate(-50%, -50%) scale(0.7); /* Scale down on small screens */
+    transform: translate(-50%, -70%) scale(1); /* Scale down on small screens */
+  }
+
+  #login {
+    top: 10svh !important;
   }
 
   #register.hidden {
-    top:calc(14svh + 90px) !important;
+    top:calc(5svh + 90px) !important;
     z-index:1;
   }
 
   #login.hidden {
-    top:calc(13svh + 90px) !important;
+    top:calc(25svh + 90px) !important;
     z-index:1;
   }
 }

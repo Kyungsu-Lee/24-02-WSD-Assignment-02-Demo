@@ -19,11 +19,6 @@ body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 
-#app {
-  overflow: hidden;
-}
-
-
 html, body {
   overflow-y: scroll;
   scrollbar-width: none;
