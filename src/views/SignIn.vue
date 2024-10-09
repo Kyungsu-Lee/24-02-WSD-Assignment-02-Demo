@@ -82,6 +82,7 @@ export default {
     const hours = ref('')
     const minutes = ref('')
     const ampm = ref('')
+    const router = useRouter();
 
     const isLoginFormValid = computed(() => email.value && password.value)
     const isRegisterFormValid = computed(() =>
@@ -132,7 +133,7 @@ export default {
           email.value,
           password.value,
           () => {
-            useRouter().push('/');
+            router.push('/');
           },
           () => {
             alert('Login failed');
