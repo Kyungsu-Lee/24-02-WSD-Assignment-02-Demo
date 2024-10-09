@@ -21,7 +21,7 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next): void => {
     const isAuthenticated = localStorage.getItem('TMDb-Key') !== null;
 
     if (to.matched.some(record => record.meta.requiresAuth)) {
