@@ -1,19 +1,19 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import App from '@/App.vue';
 import SignIn from '@/views/SignIn.vue';
+import Home from "../views/home.vue";
 
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: App,
+        name: 'Main',
+        component: Home,
         meta: { requiresAuth: true } // 인증이 필요한 경우 설정
     },
     {
         path: '/signin',
         name: 'SignIn', // name 추가
         component: SignIn,
-    }
+    },
 ]
 
 const router = createRouter({
@@ -35,7 +35,8 @@ router.beforeEach((to, _from, next): void => {
         // If the user is already authenticated and tries to access the SignIn page
         if (to.name === 'SignIn' && isAuthenticated) {
             next({ name: 'Home' }); // Redirect to the home page
-        } else {
+        }
+        else {
             next(); // Proceed to the requested route
         }
     }
