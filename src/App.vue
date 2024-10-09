@@ -16,5 +16,14 @@ export default defineComponent({
 </script>
 
 <style>
+body {
+  overflow: hidden;
+  margin: 0;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
+#app {
+  overflow: hidden;
+}
 
 </style>

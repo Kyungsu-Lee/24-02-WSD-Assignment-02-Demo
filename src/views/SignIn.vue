@@ -2,7 +2,7 @@
   <div>
     <div class="bg-image" />
     <div class="container">
-      <div id="phone" @mouseover="showCursor" @mouseout="hideCursor" @mousedown="scaleCursor(0.8)" @mouseup="scaleCursor(1)">
+      <div id="phone">
 
         <div id="content-wrapper">
           <div :class="['card', { hidden: !isLoginVisible }]" id="login">
@@ -59,10 +59,11 @@
 
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import {tryLogin, tryRegister} from "@/script/auth/Authentication.js";
 
 export default {
   setup() {
-    const isLoginVisible = ref(true)
+    const isLoginVisible = ref(true) // should be changed to true
     const email = ref('')
     const password = ref('')
     const registerEmail = ref('')
@@ -117,40 +118,37 @@ export default {
       }
     }
 
-    const showCursor = () => cursorStyle.value.display = 'block'
-    const hideCursor = () => cursorStyle.value.display = 'none'
-    const scaleCursor = (scale) => cursorStyle.value.transform = `scale(${scale})`
-
-    const handleMouseMove = (e) => {
-      cursorStyle.value.left = `${e.pageX}px`
-      cursorStyle.value.top = `${e.pageY}px`
-    }
-
-    const updateClock = () => {
-      const date = new Date()
-      hours.value = date.getHours() > 12 ? date.getHours() - 12 : date.getHours()
-      minutes.value = date.getMinutes().toString().padStart(2, '0')
-      ampm.value = date.getHours() >= 12 ? 'pm' : 'am'
-    }
-
     onMounted(() => {
-      document.addEventListener('mousemove', handleMouseMove)
-      updateClock()
-      setInterval(updateClock, 10000)
+
     })
 
     onUnmounted(() => {
-      document.removeEventListener('mousemove', handleMouseMove)
     })
 
     const handleLogin = () => {
-      console.log('Login submitted')
-      // Implement login logic here
+      tryLogin(
+          email.value,
+          password.value,
+          () => {
+            window.location.href = '/';
+          },
+          () => {
+            alert('Login failed');
+          }
+      )
     }
 
     const handleRegister = () => {
-      console.log('Register submitted')
-      // Implement register logic here
+      tryRegister(
+          registerEmail.value,
+          registerPassword.value,
+          () => {
+            toggleCard();
+          },
+          (err) => {
+            alert(err);
+          }
+      )
     }
 
     return {
@@ -158,7 +156,7 @@ export default {
       rememberMe, acceptTerms, isEmailFocused, isPasswordFocused, isRegisterEmailFocused,
       isRegisterPasswordFocused, isConfirmPasswordFocused, cursorStyle, hours, minutes, ampm,
       isLoginFormValid, isRegisterFormValid, toggleCard, focusInput, blurInput,
-      showCursor, hideCursor, scaleCursor, handleLogin, handleRegister
+      handleLogin, handleRegister
     }
   }
 }

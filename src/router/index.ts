@@ -5,6 +5,7 @@ import SignIn from '@/views/SignIn.vue';
 const routes = [
     {
         path: '/',
+        name: 'Home',
         component: App,
         meta: { requiresAuth: true } // 인증이 필요한 경우 설정
     },
@@ -21,19 +22,25 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    console.log('from', from);
-    const isAuthenticated = localStorage.getItem('TMDb-Key') !== null
+    const isAuthenticated = localStorage.getItem('TMDb-Key') !== null;
 
     if (to.matched.some(record => record.meta.requiresAuth)) {
+        // If the route requires authentication and the user is not authenticated
         if (!isAuthenticated) {
-            next({ name: 'SignIn' }) // 라우트 네임으로 이동
+            next({ name: 'SignIn' }); // Redirect to the SignIn page
         } else {
-            next()
+            next(); // Proceed to the requested route
         }
     } else {
-        next()
+        // If the user is already authenticated and tries to access the SignIn page
+        if (to.name === 'SignIn' && isAuthenticated) {
+            next({ name: 'Home' }); // Redirect to the home page
+        } else {
+            next(); // Proceed to the requested route
+        }
     }
-})
+});
+
 
 export default router
 
