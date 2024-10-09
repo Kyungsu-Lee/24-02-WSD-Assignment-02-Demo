@@ -60,6 +60,8 @@
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import {tryLogin, tryRegister} from "@/script/auth/Authentication.js";
+import { useRouter } from 'vue-router'
+
 
 export default {
   setup() {
@@ -130,7 +132,7 @@ export default {
           email.value,
           password.value,
           () => {
-            window.location.href = '/';
+            useRouter().push('/');
           },
           () => {
             alert('Login failed');
