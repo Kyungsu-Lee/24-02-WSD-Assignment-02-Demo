@@ -1,10 +1,7 @@
 <template>
-  <div id="app">
-    <main>
-      <!-- 라우터 뷰 컴포넌트가 여기에 렌더링됩니다 -->
-      <router-view></router-view>
-    </main>
-  </div>
+  <main>
+    <router-view></router-view>
+  </main>
 </template>
 
 <script lang="ts">
@@ -25,6 +22,19 @@ body {
 #app {
   overflow: hidden;
 }
+
+
+html, body {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="container">
     <header class="app-header">
       <div class="header-left">
         <nav class="nav-links">
@@ -98,20 +98,8 @@ body {
   overflow: auto !important;
   overflow-x: hidden;
 }
-
-html, body {
-  overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-html::-webkit-scrollbar, body::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
 #app {
-  width: 100%;
+  width: 95svw;
   overflow-x: hidden;
 }
 
@@ -159,7 +147,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .nav-links a {
   color: #e5e5e5;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 0.85rem;
   transition: color 0.3s ease;
 }
 
@@ -171,7 +159,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   background: none;
   border: none;
   color: white;
-  font-size: 18px;
+  font-size: 1.2rem;
   margin-left: 20px;
   cursor: pointer;
 }
@@ -179,4 +167,34 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .icon-button:hover {
   opacity: 0.8;
 }
+
+@media (max-width: 768px) {
+  body, #app {
+    font-size: 10px !important;
+  }
+
+
+  .nav-links a {
+    color: #e5e5e5;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+  }
+
+  .nav-links a:hover {
+    color: #b3b3b3;
+  }
+
+  .icon-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 0.75rem;
+    margin-left: 0;
+    cursor: pointer;
+  }
+
+
+}
+
 </style>

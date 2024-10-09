@@ -30,13 +30,14 @@ export default {
 
 <style scoped>
 .banner {
-  height: 80vh;
+  height: 60vh;
+  max-width: 95svw;
   background-size: cover;
   background-position: center;
   color: white;
   display: flex;
   align-items: flex-end;
-  width: 100%;
+  margin-top: 50px;
 }
 
 .banner-content {
@@ -85,5 +86,36 @@ export default {
   width: 150px;
 }
 
+@media screen and (max-height: 768px) {
+  .banner h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+
+  .banner-content {
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+
+  .banner p {
+    font-size: 0.9rem;
+    max-width: 500px;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .title-btn {
+    margin-top: 5px;
+    width: 100px;
+    font-size: 0.75rem;
+  }
+}
 
 </style>

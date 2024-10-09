@@ -234,4 +234,35 @@ export default {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+  .movie-row {
+    margin-bottom: 20px;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+
+  .movie-card {
+    flex: 0 0 auto;
+    width: 120px;
+    margin-right: 5px;
+    transition: transform 0.3s;
+  }
+
+
+  .movie-slider {
+    display: flex;
+    transition: transform 0.3s ease;
+    padding: 0px 0;
+  }
+
+
+  .slider-window {
+    overflow: hidden;
+    margin: 0 10px;
+  }
+}
+
 </style>
