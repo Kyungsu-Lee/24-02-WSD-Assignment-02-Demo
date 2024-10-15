@@ -1,13 +1,35 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import SignIn from '@/views/SignIn.vue';
-import Home from "../views/home.vue";
+import SignIn from '@/vue/SignIn.vue';
+import Home from "../vue/home.vue";
 
 const routes = [
     {
         path: '/',
         name: 'Main',
         component: Home,
-        meta: { requiresAuth: true } // 인증이 필요한 경우 설정
+        meta: { requiresAuth: true }, // 인증이 필요한 경우 설정
+        children: [
+            {
+                name: 'HomeMain',
+                component: () => import('@/views/home-main.vue'),
+                path: '/',
+            },
+            {
+                name: 'HomePopular',
+                component: () => import('@/views/home-popular.vue'),
+                path: '/popular',
+            },
+            {
+                name: 'HomeWishList',
+                component: () => import('@/views/home-wishlist.vue'),
+                path: '/wishlist',
+            },
+            {
+                name: 'HomeSearch',
+                component: () => import('@/views/home-search.vue'),
+                path: '/search',
+            }
+        ]
     },
     {
         path: '/signin',
