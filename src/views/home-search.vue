@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const dropdowns = {
   originalLanguage: ['원어', '영어'],
@@ -30,9 +30,9 @@ const closeAllSelect = () => {
   this.activeDropdown = null;
 };
 
-// mounted(() => {
-//   window.addEventListener('click', closeAllSelect);
-// });
+onMounted(() => {
+  window.addEventListener('click', closeAllSelect);
+});
 
 </script>
 
