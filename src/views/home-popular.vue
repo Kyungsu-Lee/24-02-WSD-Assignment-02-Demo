@@ -1,9 +1,10 @@
 <script setup lang="ts">
-
 </script>
 
 <template>
-  popular
+  <div class="popular-container">
+    popular
+  </div>
 </template>
 
 <style scoped>

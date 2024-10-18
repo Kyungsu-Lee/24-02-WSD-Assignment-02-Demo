@@ -17,17 +17,17 @@ const routes = [
             {
                 name: 'HomePopular',
                 component: () => import('@/views/home-popular.vue'),
-                path: '/popular',
+                path: 'popular',
             },
             {
                 name: 'HomeWishList',
                 component: () => import('@/views/home-wishlist.vue'),
-                path: '/wishlist',
+                path: 'wishlist',
             },
             {
                 name: 'HomeSearch',
                 component: () => import('@/views/home-search.vue'),
-                path: '/search',
+                path: 'search',
             }
         ]
     },
