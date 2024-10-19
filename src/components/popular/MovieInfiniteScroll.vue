@@ -9,10 +9,8 @@
         </div>
       </div>
     </div>
-    <div class="pagination" v-if="totalPages > 1">
-      <button @click="prevPage" :disabled="currentPage === 1">&lt; 이전</button>
-      <span>{{ currentPage }} / {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">다음 &gt;</button>
+    <div ref="loadingTrigger" class="loading-trigger">
+      <div v-if="isLoading" class="loading-indicator">Loading...</div>
     </div>
   </div>
 </template>
@@ -23,9 +21,6 @@ import axios from 'axios';
 
 export default {
   name: 'MovieGrid',
-  components: {
-
-  },
   props: {
     fetchUrl: {
       type: String,
@@ -36,60 +31,54 @@ export default {
     const movies = ref([]);
     const currentPage = ref(1);
     const gridContainer = ref(null);
+    const loadingTrigger = ref(null);
     const rowSize = ref(4);
-    const moviesPerPage = ref(20);
+    const isLoading = ref(false);
     const isMobile = ref(window.innerWidth <= 768);
     const currentView = ref('grid');
+    const hasMore = ref(true);
 
     const fetchMovies = async () => {
+      if (isLoading.value || !hasMore.value) return;
+
+      isLoading.value = true;
       try {
-        const totalMoviesNeeded = 120; // 원하는 총 영화 수
-        const numberOfPages = Math.ceil(totalMoviesNeeded / 20);
-
-        let allMovies = [];
-
-        for (let page = 1; page <= numberOfPages; page++) {
-          const response = await axios.get(props.fetchUrl, {
-            params: {
-              page: page,
-              per_page: moviesPerPage
-            }
-          });
-          allMovies = [...allMovies, ...response.data.results];
+        const response = await axios.get(props.fetchUrl, {
+          params: {
+            page: currentPage.value,
+            per_page: 20
+          }
+        });
+        const newMovies = response.data.results;
+        if (newMovies.length > 0) {
+          movies.value = [...movies.value, ...newMovies];
+          currentPage.value++;
+        } else {
+          hasMore.value = false;
         }
-
-        // 원하는 수만큼 잘라내기
-        movies.value = allMovies.slice(0, totalMoviesNeeded);
       } catch (error) {
         console.error('Error fetching movies:', error);
+      } finally {
+        isLoading.value = false;
       }
     };
 
     const getImageUrl = (path) => {
-      return `https://image.tmdb.org/t/p/w300${path}`;
+      return path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg';
     };
 
     const calculateLayout = () => {
       if (gridContainer.value) {
         const containerWidth = gridContainer.value.offsetWidth;
-        const containerHeight = window.innerHeight - gridContainer.value.offsetTop;
-        const movieCardWidth = isMobile.value ? 100 : 200;
-        const movieCardHeight = isMobile.value ? 150 : 220;
+        const movieCardWidth = isMobile.value ? 100 : 300;
         const horizontalGap = isMobile.value ? 10 : 15;
-        const verticalGap = -10;
 
         rowSize.value = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
-        const maxRows = Math.floor(containerHeight / (movieCardHeight + verticalGap));
-        moviesPerPage.value = rowSize.value * maxRows;
       }
     };
 
     const visibleMovieGroups = computed(() => {
-      const startIndex = (currentPage.value - 1) * moviesPerPage.value;
-      const endIndex = startIndex + moviesPerPage.value;
-      const paginatedMovies = movies.value.slice(startIndex, endIndex);
-
-      return paginatedMovies.reduce((resultArray, item, index) => {
+      return movies.value.reduce((resultArray, item, index) => {
         const groupIndex = Math.floor(index / rowSize.value);
         if (!resultArray[groupIndex]) {
           resultArray[groupIndex] = [];
@@ -99,62 +88,77 @@ export default {
       }, []);
     });
 
-    const totalPages = computed(() => Math.ceil(movies.value.length / moviesPerPage.value));
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
-
-    const prevPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
-    };
-
     const handleResize = () => {
       isMobile.value = window.innerWidth <= 768;
       calculateLayout();
     };
 
+    const checkAndLoadMore = () => {
+      const lastRow = gridContainer.value.lastElementChild;
+      const containerBottom = gridContainer.value.getBoundingClientRect().bottom;
+      const lastRowBottom = lastRow.getBoundingClientRect().bottom;
+
+      if (containerBottom >= lastRowBottom - 100 && !isLoading.value && hasMore.value) {
+        fetchMovies();
+      }
+    };
+
     onMounted(() => {
-      fetchMovies();
+      fetchMovies().then(() => {
+        checkAndLoadMore();
+      });
       calculateLayout();
       window.addEventListener('resize', handleResize);
-    });
 
-    onUnmounted(() => {
-      window.removeEventListener('resize', handleResize);
-    });
+      const observer = new IntersectionObserver(
+          (entries) => {
+            if (entries[0].isIntersecting && !isLoading.value && hasMore.value) {
+              fetchMovies();
+            }
+          },
+          { rootMargin: '100px', threshold: 0.1 }
+      );
 
-    watch([rowSize, moviesPerPage], () => {
-      currentPage.value = 1;
+      if (loadingTrigger.value) {
+        observer.observe(loadingTrigger.value);
+      }
+
+      window.addEventListener('scroll', checkAndLoadMore);
+
+      onUnmounted(() => {
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('scroll', checkAndLoadMore);
+        if (loadingTrigger.value) {
+          observer.unobserve(loadingTrigger.value);
+        }
+      });
     });
 
     return {
       visibleMovieGroups,
-      currentPage,
-      totalPages,
       getImageUrl,
-      nextPage,
-      prevPage,
       gridContainer,
-      rowSize // 이 줄을 추가합니다
+      loadingTrigger,
+      rowSize,
+      isLoading,
+      currentView,
+      hasMore
     };
   }
 };
 </script>
 
 <style scoped>
+html, body {
+  overflow-y: scroll !important;
+}
+
 .movie-grid {
   width: 100%;
-  height: calc(100vh - 200px);
   margin-bottom: 40px;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .grid-container {
@@ -175,7 +179,7 @@ export default {
 }
 
 .movie-card {
-  width: 200px;
+  width: 300px;
   margin: 0 10px;
   transition: transform 0.3s;
   position: relative;
@@ -193,8 +197,7 @@ export default {
 }
 
 .movie-card img {
-  width: 80%;
-  aspect-ratio: 1/1;
+  width: 100%;
   border-radius: 4px;
   object-fit: cover;
 }
@@ -218,27 +221,15 @@ export default {
   white-space: normal;
 }
 
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.loading-trigger {
+  height: 20px;
   margin-top: 20px;
 }
 
-.pagination button {
-  background-color: #333;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  margin: 0 10px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.loading-indicator {
+  text-align: center;
+  font-size: 16px;
+  color: #333;
 }
 
 @media (max-width: 768px) {
@@ -251,10 +242,6 @@ export default {
     font-size: 12px;
   }
 
-  .pagination button {
-    padding: 8px 12px;
-    font-size: 14px;
-  }
   .grid-container.list .movie-card img {
     width: 60px;
   }
