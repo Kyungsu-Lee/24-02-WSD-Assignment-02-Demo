@@ -39,7 +39,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),  // hash 모드 사용
+    history: createWebHashHistory('/24-02-WSD-Assignment-02-Demo/'),
     routes
 })
 
