@@ -242,6 +242,16 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .movie-grid {
+    width: 100%;
+    height: calc(90vh - 200px);
+    margin-bottom: 40px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   .movie-card {
     width: 120px;
     margin: 0 5px;
