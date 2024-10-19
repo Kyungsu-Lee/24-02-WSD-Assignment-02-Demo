@@ -56,7 +56,7 @@ router.beforeEach((to, _from, next): void => {
     } else {
         // If the user is already authenticated and tries to access the SignIn page
         if (to.name === 'SignIn' && isAuthenticated) {
-            next({ name: 'Home' }); // Redirect to the home page
+            next({ name: '/' }); // Redirect to the home page
         }
         else {
             next(); // Proceed to the requested route
