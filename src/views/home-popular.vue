@@ -27,11 +27,11 @@ const setView = (view: string) => {
 
 
 const disableScroll = () => {
-  document.body.style.overflow = 'scroll';
+  document.body.style.overflow = 'hidden';
 };
 
 const enableScroll = () => {
-  document.body.style.overflow = 'scroll';
+  document.body.style.overflow = 'auto';
 };
 
 onMounted(() => {
