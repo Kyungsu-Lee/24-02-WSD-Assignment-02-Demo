@@ -1,4 +1,3 @@
-<!-- MovieRow.vue -->
 <template>
   <div class="movie-row">
     <h2>{{ title }}</h2>
@@ -12,8 +11,9 @@
       <button class="slider-button left" @click="slide('left')" :style="{ opacity: showButtons && !atLeftEdge ? 1 : 0 }" :disabled="atLeftEdge">&lt;</button>
       <div class="slider-window" ref="sliderWindow">
         <div class="movie-slider" ref="slider" :style="{ transform: `translateX(${-scrollAmount}px)` }">
-          <div v-for="movie in movies" :key="movie.id" class="movie-card">
+          <div v-for="movie in movies" :key="movie.id" class="movie-card" @click="toggleWishlist(movie)">
             <img :src="getImageUrl(movie.poster_path)" :alt="movie.title">
+            <div v-if="isInWishlist(movie.id)" class="wishlist-indicator">👍</div>
           </div>
         </div>
       </div>
@@ -25,6 +25,7 @@
 <script>
 import { ref, onMounted, computed, watch } from 'vue';
 import axios from 'axios';
+import { useWishlist } from '@/script/movie/wishlist'; // 경로는 실제 위치에 맞게 조정해주세요
 
 export default {
   name: 'MovieRow',
@@ -47,6 +48,8 @@ export default {
     const isScrolling = ref(false);
     const touchStartX = ref(0);
     const touchEndX = ref(0);
+
+    const { wishlist, toggleWishlist, isInWishlist } = useWishlist();
 
     const calculateMaxScroll = () => {
       if (slider.value && sliderWindow.value) {
@@ -153,13 +156,27 @@ export default {
       handleWheel,
       handleTouchStart,
       handleTouchMove,
-      handleTouchEnd
+      handleTouchEnd,
+      toggleWishlist,
+      isInWishlist
     };
   }
 };
 </script>
 
 <style scoped>
+
+.wishlist-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
 .movie-row {
   margin-bottom: 40px;
   position: relative;
@@ -193,6 +210,8 @@ export default {
   width: 200px;
   margin-right: 10px;
   transition: transform 0.3s;
+  position: relative;
+  cursor: pointer;
 }
 
 .movie-card:hover {

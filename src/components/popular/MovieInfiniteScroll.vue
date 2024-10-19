@@ -3,9 +3,14 @@
     <div :class="['grid-container', currentView]">
       <div v-for="(movieGroup, index) in visibleMovieGroups" :key="index"
            :class="['movie-row', { 'full': movieGroup.length === rowSize }]">
-        <div v-for="movie in movieGroup" :key="movie.id" class="movie-card">
+        <div v-for="movie in movieGroup" :key="movie.id" class="movie-card"
+             @mousedown="startWishlistTimer(movie)"
+             @mouseup="clearWishlistTimer"
+             @mouseleave="clearWishlistTimer"
+             @contextmenu.prevent="toggleWishlist(movie)">
           <img :src="getImageUrl(movie.poster_path)" :alt="movie.title">
           <div class="movie-title">{{ movie.title }}</div>
+          <div v-if="isInWishlist(movie.id)" class="wishlist-indicator">👍</div>
         </div>
       </div>
     </div>
@@ -16,11 +21,19 @@
   </div>
 </template>
 
-<script>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+<script lang="ts">
+import { ref, computed, onMounted, onUnmounted, defineComponent } from 'vue';
 import axios from 'axios';
+import {useWishlist} from "@/script/movie/wishlist.ts";
 
-export default {
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  // Add other relevant movie properties
+}
+
+export default defineComponent({
   name: 'MovieGrid',
   props: {
     fetchUrl: {
@@ -29,23 +42,27 @@ export default {
     }
   },
   setup(props) {
-    const movies = ref([]);
+    const movies = ref<Movie[]>([]);
     const currentPage = ref(1);
-    const gridContainer = ref(null);
-    const loadingTrigger = ref(null);
+    const gridContainer = ref<HTMLElement | null>(null);
+    const loadingTrigger = ref<HTMLElement | null>(null);
     const rowSize = ref(4);
     const isLoading = ref(false);
     const isMobile = ref(window.innerWidth <= 768);
     const currentView = ref('grid');
     const hasMore = ref(true);
     const showTopButton = ref(false);
+    let wishlistTimer: number | null = null;
 
-    const fetchMovies = async () => {
+    // Use the wishlist composable
+    const { wishlist, loadWishlist, toggleWishlist, isInWishlist } = useWishlist();
+
+    const fetchMovies = async (): Promise<void> => {
       if (isLoading.value || !hasMore.value) return;
 
       isLoading.value = true;
       try {
-        const response = await axios.get(props.fetchUrl, {
+        const response = await axios.get<{ results: Movie[] }>(props.fetchUrl, {
           params: {
             page: currentPage.value,
             per_page: 20
@@ -65,11 +82,11 @@ export default {
       }
     };
 
-    const getImageUrl = (path) => {
+    const getImageUrl = (path: string | null): string => {
       return path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg';
     };
 
-    const calculateLayout = () => {
+    const calculateLayout = (): void => {
       if (gridContainer.value) {
         const containerWidth = gridContainer.value.offsetWidth;
         const movieCardWidth = isMobile.value ? 100 : 300;
@@ -80,7 +97,7 @@ export default {
     };
 
     const visibleMovieGroups = computed(() => {
-      return movies.value.reduce((resultArray, item, index) => {
+      return movies.value.reduce<Movie[][]>((resultArray, item, index) => {
         const groupIndex = Math.floor(index / rowSize.value);
         if (!resultArray[groupIndex]) {
           resultArray[groupIndex] = [];
@@ -90,13 +107,17 @@ export default {
       }, []);
     });
 
-    const handleResize = () => {
+    const handleResize = (): void => {
       isMobile.value = window.innerWidth <= 768;
       calculateLayout();
     };
 
-    const checkAndLoadMore = () => {
+    const checkAndLoadMore = (): void => {
+      if (!gridContainer.value) return;
+
       const lastRow = gridContainer.value.lastElementChild;
+      if (!lastRow) return;
+
       const containerBottom = gridContainer.value.getBoundingClientRect().bottom;
       const lastRowBottom = lastRow.getBoundingClientRect().bottom;
 
@@ -105,20 +126,20 @@ export default {
       }
     };
 
-    const handleScroll = () => {
+    const handleScroll = (): void => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       showTopButton.value = scrollTop > 300;
       checkAndLoadMore();
     };
 
-    const resetMovies = () => {
+    const resetMovies = (): void => {
       movies.value = [];
       currentPage.value = 1;
       hasMore.value = true;
       fetchMovies();
     };
 
-    const scrollToTopAndReset = () => {
+    const scrollToTopAndReset = (): void => {
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
@@ -126,11 +147,26 @@ export default {
       resetMovies();
     };
 
+    const startWishlistTimer = (movie: Movie): void => {
+      clearWishlistTimer();
+      wishlistTimer = window.setTimeout(() => {
+        toggleWishlist(movie);
+      }, 800);
+    };
+
+    const clearWishlistTimer = (): void => {
+      if (wishlistTimer !== null) {
+        clearTimeout(wishlistTimer);
+        wishlistTimer = null;
+      }
+    };
+
     onMounted(() => {
       fetchMovies().then(() => {
         checkAndLoadMore();
       });
       calculateLayout();
+      loadWishlist();
       window.addEventListener('resize', handleResize);
       window.addEventListener('scroll', handleScroll);
 
@@ -166,11 +202,16 @@ export default {
       currentView,
       hasMore,
       showTopButton,
-      scrollToTopAndReset
+      scrollToTopAndReset,
+      startWishlistTimer,
+      clearWishlistTimer,
+      toggleWishlist,
+      isInWishlist
     };
   }
-};
+});
 </script>
+
 
 <style scoped>
 html, body {
@@ -191,6 +232,16 @@ html, body {
   align-items: center;
 }
 
+
+.wishlist-indicator {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 30px;
+  background-color: rgba(229, 9, 20, 0.5);
+}
+
+
 .movie-row {
   display: flex;
   justify-content: center;
@@ -207,6 +258,7 @@ html, body {
   margin: 0 10px;
   transition: transform 0.3s;
   position: relative;
+  user-select: none; /* 텍스트 선택 방지 */
 }
 
 .grid-container.list .movie-card {
