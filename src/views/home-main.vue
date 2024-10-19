@@ -1,11 +1,16 @@
 
 <script>
-import axios from 'axios';
-import BannerComponent from "@/components/BannerComponent.vue";
-import MovieRow from "@/components/MovieRow.vue";
+import BannerComponent from "@/components/main/BannerComponent.vue";
+import MovieRow from "@/components/main/MovieRow.vue";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {
+  fetchFeaturedMovie,
+  getURL4GenreMovies,
+  getURL4PopularMovies,
+  getURL4ReleaseMovies
+} from "@/script/movie/URL.ts";
 
 library.add(faSearch, faUser);
 
@@ -26,20 +31,14 @@ export default {
     };
   },
   created() {
-    this.popularMoviesUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}&language=ko-KR`;
-    this.newReleasesUrl = `https://api.themoviedb.org/3/movie/now_playing?api_key=${this.apiKey}&language=ko-KR`;
-    this.actionMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${this.apiKey}&with_genres=28&language=ko-KR`;
-    this.fetchFeaturedMovie();
+    this.popularMoviesUrl = getURL4PopularMovies(this.apiKey);
+    this.newReleasesUrl = getURL4ReleaseMovies(this.apiKey);
+    this.actionMoviesUrl = getURL4GenreMovies(this.apiKey, '28');
+    fetchFeaturedMovie(this.apiKey).then((movie) => {
+      this.featuredMovie = movie;
+    });
   },
   methods: {
-    async fetchFeaturedMovie() {
-      try {
-        const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}&language=ko-KR`);
-        this.featuredMovie = response.data.results[0];
-      } catch (error) {
-        console.error('Error fetching featured movie:', error);
-      }
-    },
     handleScroll() {
       const header = document.querySelector('.app-header');
       if (window.scrollY > 50) {
@@ -52,7 +51,6 @@ export default {
   mounted() {
     window.addEventListener('scroll', this.handleScroll);
     setInterval(() => {
-      console.log(this.activeDropdown);
     }, 1000);
   },
   beforeUnmount() {
@@ -70,6 +68,10 @@ export default {
 </template>
 
 <style scoped>
+html, body {
+  overflow-y: scroll !important;
+}
+
 body {
   background-color: #141414 !important;
 }

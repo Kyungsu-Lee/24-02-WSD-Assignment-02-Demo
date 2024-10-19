@@ -12,13 +12,11 @@ export default defineComponent({
 
 <style>
 body {
-  overflow: hidden;
   margin: 0;
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 
 html, body {
-  overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
