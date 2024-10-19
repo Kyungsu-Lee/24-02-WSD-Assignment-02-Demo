@@ -541,15 +541,19 @@ button:hover {
   0% {transform: translate(0%, 0%)}
 }
 
-@media screen and (max-height: 800px) {
+@media (max-width: 768px) {
 
   #phone {
-    width: 100%;
+    width: 70%;
     transform: translate(-50%, -70%) scale(1); /* Scale down on small screens */
   }
 
   #login {
-    top: 10svh !important;
+    top: -2svh !important;
+  }
+
+  #register {
+    top: -2svh !important;
   }
 
   #register.hidden {
@@ -558,7 +562,7 @@ button:hover {
   }
 
   #login.hidden {
-    top:calc(25svh + 90px) !important;
+    top:calc(5svh + 90px) !important;
     z-index:1;
   }
 }
