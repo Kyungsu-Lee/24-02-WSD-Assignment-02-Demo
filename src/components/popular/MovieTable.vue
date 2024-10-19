@@ -73,8 +73,8 @@ export default {
       if (gridContainer.value) {
         const containerWidth = gridContainer.value.offsetWidth;
         const containerHeight = window.innerHeight - gridContainer.value.offsetTop;
-        const movieCardWidth = isMobile.value ? 100 : 200;
-        const movieCardHeight = isMobile.value ? 180 : 220;
+        const movieCardWidth = isMobile.value ? 90 : 200;
+        const movieCardHeight = isMobile.value ? 150 : 220;
         const horizontalGap = isMobile.value ? 10 : 15;
         const verticalGap = -10;
 
@@ -244,7 +244,7 @@ export default {
 @media (max-width: 768px) {
   .movie-grid {
     width: 100%;
-    height: calc(90vh - 200px);
+    height: calc(90svh - 200px);
     margin-bottom: 40px;
     margin-top: 30px;
     display: flex;
@@ -253,7 +253,7 @@ export default {
   }
 
   .movie-card {
-    width: 120px;
+    width: 90px;
     margin: 0 5px;
   }
 
