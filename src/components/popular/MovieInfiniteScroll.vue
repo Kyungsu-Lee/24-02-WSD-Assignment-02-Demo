@@ -4,10 +4,10 @@
       <div v-for="(movieGroup, index) in visibleMovieGroups" :key="index"
            :class="['movie-row', { 'full': movieGroup.length === rowSize }]">
         <div v-for="movie in movieGroup" :key="movie.id" class="movie-card"
-             @mousedown="startWishlistTimer(movie)"
-             @mouseup="clearWishlistTimer"
-             @mouseleave="clearWishlistTimer"
-             @contextmenu.prevent="toggleWishlist(movie)">
+             @mousedown="toggleWishlist(movie)"
+             @contextmenu.prevent="toggleWishlist(movie)"
+             @touchend="toggleWishlist(movie)"
+        >
           <img :src="getImageUrl(movie.poster_path)" :alt="movie.title">
           <div class="movie-title">{{ movie.title }}</div>
           <div v-if="isInWishlist(movie.id)" class="wishlist-indicator">👍</div>
