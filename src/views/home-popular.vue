@@ -92,4 +92,10 @@ onMounted(() => {
 .view-toggle button.active {
   background-color: #535bf2;
 }
+
+@media (max-width: 768px) {
+  .view-toggle {
+    margin-top: 80px;
+  }
+}
 </style>
