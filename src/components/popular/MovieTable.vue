@@ -5,8 +5,6 @@
            :class="['movie-row', { 'full': movieGroup.length === rowSize }]">
         <div v-for="movie in movieGroup" :key="movie.id" class="movie-card"
              @mousedown="toggleWishlist(movie)"
-             @contextmenu.prevent="toggleWishlist(movie)"
-             @touchend="toggleWishlist(movie)"
         >
           <img :src="getImageUrl(movie.poster_path)" :alt="movie.title">
           <div class="movie-title">{{ movie.title }}</div>
