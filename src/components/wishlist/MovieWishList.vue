@@ -51,7 +51,7 @@ export default {
         const containerWidth = gridContainer.value.offsetWidth;
         const containerHeight = window.innerHeight - gridContainer.value.offsetTop;
         const movieCardWidth = isMobile.value ? 90 : 220;
-        const movieCardHeight = isMobile.value ? 150 : 350;
+        const movieCardHeight = isMobile.value ? 150 : 330;
         const horizontalGap = isMobile.value ? 10 : 15;
         const verticalGap = -10;
 
@@ -165,7 +165,7 @@ export default {
 }
 
 .movie-card {
-  width: 180px;
+  width: 160px;
   margin: 0 10px;
   transition: transform 0.3s;
   position: relative;
