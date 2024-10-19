@@ -14,24 +14,25 @@ const selectedOptions = {
   sorting: '추천 컨텐츠'
 };
 
-const activeDropdown = ref(null);
+const activeDropdown = ref(null as string | null);
 
-const toggleDropdown = (key) => {
-  this.activeDropdown = activeDropdown === key ? null : key;
+const toggleDropdown = (key: string) => {
+  activeDropdown.value = activeDropdown.value === key ? null : key;
 };
 
-const selectOption = (key, option) => {
+const selectOption = (key: string, option: string) => {
   console.log(key, option);
-  selectedOptions[key] = option;
+  // selectedOptions[key] = option;
+  selectedOptions[key as keyof typeof selectedOptions] = option;
   activeDropdown.value = null;
 };
 
-const closeAllSelect = () => {
-  this.activeDropdown = null;
-};
+// const closeAllSelect = () => {
+//   activeDropdown = null;
+// };
 
 onMounted(() => {
-  window.addEventListener('click', closeAllSelect);
+  // window.addEventListener('click', closeAllSelect);
 });
 
 </script>
