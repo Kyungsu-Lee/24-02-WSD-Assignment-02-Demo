@@ -12,6 +12,7 @@
     <div ref="loadingTrigger" class="loading-trigger">
       <div v-if="isLoading" class="loading-indicator">Loading...</div>
     </div>
+    <button v-show="showTopButton" @click="scrollToTopAndReset" class="top-button">Top</button>
   </div>
 </template>
 
@@ -37,6 +38,7 @@ export default {
     const isMobile = ref(window.innerWidth <= 768);
     const currentView = ref('grid');
     const hasMore = ref(true);
+    const showTopButton = ref(false);
 
     const fetchMovies = async () => {
       if (isLoading.value || !hasMore.value) return;
@@ -103,12 +105,34 @@ export default {
       }
     };
 
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      showTopButton.value = scrollTop > 300;
+      checkAndLoadMore();
+    };
+
+    const resetMovies = () => {
+      movies.value = [];
+      currentPage.value = 1;
+      hasMore.value = true;
+      fetchMovies();
+    };
+
+    const scrollToTopAndReset = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      resetMovies();
+    };
+
     onMounted(() => {
       fetchMovies().then(() => {
         checkAndLoadMore();
       });
       calculateLayout();
       window.addEventListener('resize', handleResize);
+      window.addEventListener('scroll', handleScroll);
 
       const observer = new IntersectionObserver(
           (entries) => {
@@ -123,11 +147,9 @@ export default {
         observer.observe(loadingTrigger.value);
       }
 
-      window.addEventListener('scroll', checkAndLoadMore);
-
       onUnmounted(() => {
         window.removeEventListener('resize', handleResize);
-        window.removeEventListener('scroll', checkAndLoadMore);
+        window.removeEventListener('scroll', handleScroll);
         if (loadingTrigger.value) {
           observer.unobserve(loadingTrigger.value);
         }
@@ -142,7 +164,9 @@ export default {
       rowSize,
       isLoading,
       currentView,
-      hasMore
+      hasMore,
+      showTopButton,
+      scrollToTopAndReset
     };
   }
 };
@@ -232,6 +256,31 @@ html, body {
   color: #333;
 }
 
+.top-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #E50914;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s, transform 0.3s;
+  z-index: 1000;
+  font-weight: bolder;
+}
+
+.top-button:hover {
+  background-color: #9b0f16;
+  transform: scale(1.1);
+}
+
 @media (max-width: 768px) {
   .movie-card {
     width: 120px;
@@ -244,6 +293,12 @@ html, body {
 
   .grid-container.list .movie-card img {
     width: 60px;
+  }
+
+  .top-button {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
   }
 }
 </style>

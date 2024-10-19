@@ -17,9 +17,6 @@
         </nav>
       </div>
       <div class="header-right">
-        <button class="icon-button">
-          <font-awesome-icon :icon="['fas', 'search']" />
-        </button>
         <button class="icon-button" @click="removeKey">
           <font-awesome-icon :icon="['fas', 'user']" />
         </button>
